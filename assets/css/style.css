@@ -1,0 +1,437 @@
+:root {
+  --font-family: "U001", sans-serif;
+  --font-size: 26px;
+  --line-height: 1.25;
+  --bg-color: #E0E0E0;
+  --text-color: #7d82a0;
+  --colour-grey: #919396;
+
+  /* Page edge — the inset every fixed corner element (header, ornaments,
+     manifesto) measures itself from, so they all move together. */
+  --padding-top: 1rem;
+  --padding-right: 2rem;
+  --padding-left: 2rem;
+  --padding-bottom: 1rem;
+
+  /* .about-content's own top/bottom rhythm is bigger than the page
+     edge padding (it clears the fixed header above it), so it gets
+     its own two variables rather than reusing --padding-top/bottom.
+     One extra line-height on top of the base padding is the gap
+     between the title and the "*" below it. */
+  --content-padding-top: calc(1rem + (var(--font-size) * var(--line-height)));
+ --content-padding-bottom: 1rem;
+
+  /* Stacking layers, in one place instead of repeated magic numbers:
+     header above the page content, decoration (ornaments + the closed
+     manifesto thumbnail) above that, the open manifesto lightbox on top
+     of everything. */
+  --z-header: 99;
+  --z-decoration: 500;
+  --z-overlay: 1000;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  color: #FF2700;
+  background-color: var(--colour-grey);
+}
+
+@font-face {
+    font-family: "U001";
+    src: url("../fonts/u001-reg.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "U001";
+    src: url("../fonts/u001-ita.woff2") format("woff2");
+    font-weight: 400;
+    font-style: italic;
+}
+
+html {
+  font-size: 18px;
+  height: auto;
+  min-height: 100%;
+  overflow: auto;
+
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+body {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-synthesis: none;
+  color: var(--text-color);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  min-height: 100vh;
+  margin: 0;
+  background: var(--bg-color);
+  /* Column flex container so a short-content page can push
+     .ornament-krans (once it's position:static, below the 1175px
+     breakpoint) down to the bottom of the 100vh box via margin-top:
+     auto, instead of it just sitting wherever the text ends. */
+  display: flex;
+  flex-direction: column;
+
+  /* -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; */
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overscroll-behavior: none;
+}
+
+body {
+  overscroll-behavior: none;
+}
+
+a {
+  color: black;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  text-decoration-color: #FF2700;
+  text-decoration-thickness: 2px;
+  color: inherit;
+}
+
+i,
+em {
+  font-family: var(--font-family);
+  font-style: italic;
+  font-weight: 400;
+}
+
+#title {
+  z-index: var(--z-header);
+  color: black;
+  margin-top: var(--padding-top);
+  margin-left: var(--padding-left);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: fixed;
+  width: max-content;
+  /* mix-blend-mode: difference; */
+}
+
+.line {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0;
+}
+
+.about-content {
+  box-sizing: border-box;
+  max-width: 100em;
+  padding-top: var(--content-padding-top);
+  padding-right: var(--padding-right);
+  padding-bottom: var(--content-padding-bottom);
+  padding-left: var(--padding-left);
+  margin: 0;
+  /* mix-blend-mode: difference; */
+  color:black;
+}
+
+/* Clearfix: kept even though .manifesto no longer floats, in case a
+   future float is added back inside .about-content. Harmless either way. */
+.about-content::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.about-line {
+  margin: 0;
+}
+
+.center {
+  text-align: center;
+}
+
+.about-line + .about-line {
+  margin-top: 0;
+}
+
+.about-line.indent {
+  padding-left: 1em;
+}
+
+.about-line.newsletter {
+  color: black;
+}
+
+.about-line.spacer {
+  height: 1em;
+}
+
+.newsletter-form {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.newsletter-form label {
+  color: black;
+}
+
+.newsletter-form input[type="email"] {
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  color: black;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid black;
+  border-radius: 0;
+  padding: 0 0.25em;
+  width: 12em;
+  max-width: 100%;
+}
+
+.newsletter-form input[type="email"]:focus {
+  outline: none;
+  border-bottom-color: #FF2700;
+}
+
+/* Chrome/Safari ignore background-color on an autofilled input — this
+   inset box-shadow trick is the only reliable way to override the blue
+   fill, painting the page's own background color over it instead.
+   The absurdly long transition delays the moment Chrome would otherwise
+   flash the blue back in. */
+.newsletter-form input[type="email"]:-webkit-autofill,
+.newsletter-form input[type="email"]:-webkit-autofill:hover,
+.newsletter-form input[type="email"]:-webkit-autofill:focus {
+  -webkit-text-fill-color: black;
+  box-shadow: 0 0 0 1000px var(--bg-color) inset;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* Bot trap required by Mailchimp — must stay invisible to real visitors
+   without using display:none (some spam bots skip hidden fields). */
+.newsletter-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.newsletter-submit {
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  color: black;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.newsletter-submit:hover {
+  color: #FF2700;
+}
+
+
+/* Ornament: pinned to the bottom-left corner, mirroring how .manifesto
+   is pinned bottom-right. It's a sibling of body's other top-level
+   elements (not nested inside .about-content, which has its own
+   mix-blend-mode:difference and would isolate the ornament's multiply
+   away from the real page background). */
+
+
+.ornament {
+  position: fixed;
+  margin: 0;
+  mix-blend-mode: multiply;
+  z-index: var(--z-decoration);
+}
+
+.ornament img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ornament-krans {
+  bottom: 1em;
+  right: 2em;
+  width: 630px;
+}
+
+.ornament-o {
+  bottom: 10em;
+  right: 10em;
+  width: 50px;
+}
+
+/* Small-image-to-lightbox interaction: click the thumbnail to blow it up
+   over a solid backdrop, with a caption underneath; click anywhere to
+   close it again. Centered on its own line (not floated), so the about
+   text above and below it never wraps around it. .manifesto.is-open
+   switches it to position:fixed to become a true full-screen overlay
+   when opened. */
+.manifesto {
+  display: block;
+  margin: calc(var(--line-height) / 2 * 1em) auto;
+  width: 140px;
+  cursor: pointer;
+  z-index: var(--z-decoration);
+}
+
+.manifesto img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.manifesto-caption {
+  display: none;
+}
+
+.manifesto.is-open {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Centered, not flex-start: the image's max-height below reserves
+     enough room for the padding, gap and caption that the whole
+     lightbox always fits inside one viewport with nothing left to
+     scroll — so centering is safe here and doesn't crop anything.
+     (If that budget is ever too tight for a particular caption length,
+     overflow: auto is still there as a fallback rather than clipping.) */
+  justify-content: center;
+  gap: 1em;
+  background: var(--colour-grey);
+  cursor: pointer;
+  z-index: var(--z-overlay);
+  padding: 1em 2em;
+  overflow: auto;
+}
+
+.manifesto.is-open img {
+  width: auto;
+  max-width: 90vw;
+  /* Reserves room for the padding (2em), the gap (1em), and up to
+     three lines of caption (~3.75em) — 7em total — instead of a flat
+     vh value, so image + caption together always fit in one viewport
+     with no scrollbar, at any width. This is in em, not a fixed px/rem
+     value, so it scales automatically with --font-size (including the
+     smaller size set at the 600px breakpoint), where the caption's own
+     text and line-height shrink to match. */
+  max-height: calc(100vh - 7em);
+  flex-shrink: 0;
+}
+
+.manifesto.is-open .manifesto-caption {
+  display: block;
+  color: #111;
+  font-style: normal;
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  text-align: center;
+  max-width: 80em;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+img,
+#title {
+  -moz-user-select: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+
+@media (max-width: 1175px) {
+
+  /* .ornament-krans only, not the generic .ornament class — otherwise
+     this also repositions .ornament-o, which should stay put and look
+     the same at every width. Below 1175px it drops out of
+     position:fixed entirely and becomes a normal block at the end of
+     the page, so it sits at the bottom of the scroll (after all the
+     text) instead of floating fixed over the content the whole time
+     you scroll. Right-aligned (not centered) so the switch from fixed
+     to static doesn't visibly jump — it stays anchored to the same
+     right edge, 2em in, that it uses as position:fixed above. */
+.ornament-krans {
+  position: static;
+  display: block;
+  width: auto;
+  max-width: min(630px, calc(100vw - var(--padding-left) - var(--padding-right)));
+  margin: auto 2em 1rem auto;
+}
+
+    .about-content {
+  padding-bottom: 0;
+}
+}
+
+@media (max-width: 600px) {
+  :root {
+    --font-size: 20px;
+  }
+
+  #title {
+    width: auto;
+    max-width: calc(100vw - var(--padding-left) - var(--padding-right));
+  }
+
+  /* .ornament-krans only â€” see the note in the 800px query above.
+     On phones it drops out of position:fixed entirely and becomes a
+     normal block at the end of the page, so it sits at the bottom of
+     the scroll (after all the text) instead of floating fixed over
+     the content the whole time you scroll. */
+  .ornament-krans {
+    position: static;
+    display: block;
+    width: auto;
+    max-width: calc(100vw - var(--padding-left) - var(--padding-right));
+    margin: auto 2em 1rem auto;
+  }
+
+  .manifesto {
+    width: 100px;
+    margin: 0.75em auto;
+  }
+
+  .newsletter-form input[type="email"] {
+    width: 8em;
+  }
+
+  .newsletter-form {
+  row-gap: (var(--line-height));
+}
+
+  .about-content {
+  padding-bottom: 0;
+}
+}
