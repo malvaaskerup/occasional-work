@@ -343,8 +343,12 @@ img,
 }
 
 @media (max-width: 600px) {
-  :root {
-    --font-size: 20px;
+   :root {
+    --font-size: 18px;
+    --padding-top: 0.5rem;
+    --padding-bottom: 0.5rem;
+    --padding-right: 1rem;
+    --padding-left: 1rem;
   }
 
   #title {
