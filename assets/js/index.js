@@ -12,3 +12,13 @@ document.addEventListener('DOMContentLoaded', function () {
     manifesto.classList.remove('is-open');
   });
 });
+
+const newsletterForm = document.getElementById('mc-embedded-subscribe-form');
+if (newsletterForm) {
+  newsletterForm.addEventListener('submit', function (e) {
+    const email = document.getElementById('mce-EMAIL').value.trim();
+    if (!email) {
+      e.preventDefault();
+    }
+  });
+}
